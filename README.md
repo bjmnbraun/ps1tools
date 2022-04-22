@@ -1,9 +1,11 @@
-== Installation:
+## Installation:
 
 add
-#. {path to load_ps1tools.sh}
+
+    . {path to load_ps1tools.sh}
+    
 to your .bashrc
 
-== Usage
+## Usage
 
 Run `ps1tools` for usage
