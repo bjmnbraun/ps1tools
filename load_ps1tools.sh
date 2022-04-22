@@ -1,18 +1,7 @@
-#Installation:
-#add
-#. load_ps1tools.sh
-#
-#Usage:
-# ps1tools -t (title)
-# ps1tools -p (prompt)
-#
-#Both can take the syntax of the PS1 variable, google it.
-#Note that that syntax allows variable and command substitution -
-#$() and $ are fine, they are re-evaluated every new prompt line.
 
 function ps1tools {
 
-POSITIONAL=()
+_PS1TOOLS_SUCCESS=
 while [[ $# -gt 0 ]]
 do
 key="$1"
@@ -32,6 +21,7 @@ case $key in
         #Note that the title will only be loaded _after_ the next prompt line
         #Doing this forces it to be updated immediately:
         echo -en '\e]0;'${title}'\a'
+        _PS1TOOLS_SUCCESS=YES
 ;;
 -c|--color)
         color="$2"
@@ -47,6 +37,7 @@ case $key in
         shift # past value
         #Update the color immediately:
         echo -en '\e['${color}'m'
+        _PS1TOOLS_SUCCESS=YES
 ;;
 -p|--prompt)
         prompt="$2"
@@ -60,13 +51,21 @@ case $key in
         fi
         shift # past argument
         shift # past value
+        _PS1TOOLS_SUCCESS=YES
 ;;
 *)    # unknown option
-POSITIONAL+=("$1") # save it in an array for later
-shift # past argument
+        break
 ;;
 esac
 done
-set -- "${POSITIONAL[@]}" # restore positional parameters
+
+if [ "$_PS1TOOLS_SUCCESS" != "YES" ]; then
+        echo "Usage: ps1tools {options}"
+        echo " -p --prompt : set prompt prefix"
+        echo " -t --title: set title of terminal"
+        echo "Both -p and -t take the syntax of the PS1 variable, google it."
+        echo "Note that the syntax allows variable and command substitution, these will be substituted every prompt line."
+        echo " -c --color: colored text (ANSI terminal color code number)"
+fi
 
 }
